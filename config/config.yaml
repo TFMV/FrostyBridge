@@ -11,4 +11,4 @@ gcs:
   key_file: sa.json
 
 arrow:
-   format: feather
+   format: orc
