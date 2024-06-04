@@ -1,0 +1,11 @@
+postgres:
+  user: postgres
+  password: your_postgres_password
+  host: localhost
+  port: 5432
+  database: tfmv
+
+gcs:
+  bucket_name: tfmv-fuse
+  project: tfmv-371720
+  key_file: sa.json

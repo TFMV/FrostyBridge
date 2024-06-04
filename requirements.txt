@@ -1,0 +1,4 @@
+asyncpg
+duckdb
+gcsfs
+pyyaml
