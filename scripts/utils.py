@@ -52,6 +52,17 @@ def export_to_format(table_name, arrow_table, gcs_bucket, gcs_project, arrow_for
             raise ValueError(f"Unsupported format: {arrow_format}")
 
 def export_to_iceberg(table_name, arrow_table, gcs_bucket, gcs_project):
+    import importlib
+    import sys
+
+    # Check if the 'distutils' module is available
+    if 'distutils' in sys.modules:
+        from distutils.version import LooseVersion
+    else:
+        # If not, try to import it from the 'setuptools' package
+        setuptools_version = importlib.import_module('setuptools.version')
+        LooseVersion = setuptools_version.LooseVersion
+
     # Initialize Spark session with Iceberg support
     spark = SparkSession.builder \
         .appName("FrostyBridge") \
