@@ -1,5 +1,6 @@
 asyncpg
-duckdb
 gcsfs
 pyyaml
 pyarrow
+fastapi
+uvicorn

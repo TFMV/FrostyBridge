@@ -37,5 +37,5 @@ Configure the `config.yaml` file with your PostgreSQL and GCS details
 ## Usage
 
 ```bash
-bash run.sh
+./run.sh
 ```

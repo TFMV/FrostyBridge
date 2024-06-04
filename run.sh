@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python3 scripts/export_db.py
+# Run the FastAPI server
+uvicorn app.main:app --host 0.0.0.0 --port 8000
