@@ -1,4 +1,5 @@
-import duckdb
+import pyarrow as pa
+import pyarrow.parquet as pq
 import asyncpg
 import yaml
 import os
@@ -14,9 +15,15 @@ async def fetch_table_names(connection):
     result = await connection.fetch(query)
     return [row['table_name'] for row in result]
 
-def export_to_iceberg(table_name, data, gcs_bucket, gcs_project):
-    duckdb_conn = duckdb.connect(database=':memory:')
-    duckdb_conn.execute(f"CREATE TABLE {table_name} AS SELECT * FROM data")
+async def fetch_table_data(connection, table_name):
+    query = f'SELECT * FROM {table_name};'
+    records = await connection.fetch(query)
+    return pa.Table.from_pylist([dict(record) for record in records])
+
+def export_to_parquet(table_name, arrow_table, gcs_bucket, gcs_project):
     gcsfs = GCSFileSystem(project=gcs_project)
-    with gcsfs.open(f"{gcs_bucket}/{table_name}.parquet", 'wb') as f:
-        duckdb_conn.execute(f"COPY {table_name} TO 's3://{gcs_bucket}/{table_name}.parquet' (FORMAT 'parquet')")
+    parquet_path = f"{gcs_bucket}/{table_name}.parquet"
+    
+    with gcsfs.open(parquet_path, 'wb') as f:
+        pq.write_table(arrow_table, f, compression='snappy')
+
