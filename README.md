@@ -2,6 +2,8 @@
 
 FrostyBridge is a Python solution that exports an entire PostgreSQL database to Google Cloud Storage (GCS) in Iceberg format, with one Iceberg table per PostgreSQL table.
 
+![FrostyBridge](assets/fb.webp)
+
 ## Features
 
 - Export all tables from a PostgreSQL database to GCS
@@ -19,7 +21,7 @@ FrostyBridge is a Python solution that exports an entire PostgreSQL database to 
 ## Installation
 
 ### Clone the repository
-   
+
 ```bash
 git clone https://github.com/TFMV/FrostyBridge.git
 ```
