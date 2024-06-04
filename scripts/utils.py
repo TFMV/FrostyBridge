@@ -3,6 +3,7 @@ import pyarrow.parquet as pq
 import pyarrow.csv as pcsv
 import pyarrow.feather as pf
 import pyarrow.json as pjson
+import pyarrow.orc as porc
 import asyncpg
 import yaml
 import os
@@ -29,7 +30,8 @@ def export_to_format(table_name, arrow_table, gcs_bucket, gcs_project, arrow_for
         'parquet': 'parquet',
         'csv': 'csv',
         'feather': 'feather',
-        'json': 'json'
+        'json': 'json',
+        'orc': 'orc'
     }.get(arrow_format, 'parquet')
     
     file_path = f"{gcs_bucket}/{table_name}.{file_extension}"
@@ -43,5 +45,7 @@ def export_to_format(table_name, arrow_table, gcs_bucket, gcs_project, arrow_for
             pf.write_feather(arrow_table, f)
         elif arrow_format == 'json':
             pjson.write_json(arrow_table, f)
+        elif arrow_format == 'orc':
+            porc.write_table(arrow_table, f)
         else:
             raise ValueError(f"Unsupported format: {arrow_format}")
