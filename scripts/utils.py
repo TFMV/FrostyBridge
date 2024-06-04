@@ -1,5 +1,8 @@
 import pyarrow as pa
 import pyarrow.parquet as pq
+import pyarrow.csv as pcsv
+import pyarrow.feather as pf
+import pyarrow.json as pjson
 import asyncpg
 import yaml
 import os
@@ -20,10 +23,25 @@ async def fetch_table_data(connection, table_name):
     records = await connection.fetch(query)
     return pa.Table.from_pylist([dict(record) for record in records])
 
-def export_to_parquet(table_name, arrow_table, gcs_bucket, gcs_project):
+def export_to_format(table_name, arrow_table, gcs_bucket, gcs_project, arrow_format):
     gcsfs = GCSFileSystem(project=gcs_project)
-    parquet_path = f"{gcs_bucket}/{table_name}.parquet"
+    file_extension = {
+        'parquet': 'parquet',
+        'csv': 'csv',
+        'feather': 'feather',
+        'json': 'json'
+    }.get(arrow_format, 'parquet')
     
-    with gcsfs.open(parquet_path, 'wb') as f:
-        pq.write_table(arrow_table, f, compression='snappy')
-
+    file_path = f"{gcs_bucket}/{table_name}.{file_extension}"
+    
+    with gcsfs.open(file_path, 'wb') as f:
+        if arrow_format == 'parquet':
+            pq.write_table(arrow_table, f, compression='snappy')
+        elif arrow_format == 'csv':
+            pcsv.write_csv(arrow_table, f)
+        elif arrow_format == 'feather':
+            pf.write_feather(arrow_table, f)
+        elif arrow_format == 'json':
+            pjson.write_json(arrow_table, f)
+        else:
+            raise ValueError(f"Unsupported format: {arrow_format}")

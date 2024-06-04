@@ -9,3 +9,6 @@ gcs:
   bucket_name: tfmv-fuse
   project: tfmv-371720
   key_file: sa.json
+
+arrow:
+   format: feather
