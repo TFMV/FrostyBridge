@@ -8,7 +8,7 @@ FrostyBridge is a Python solution that exports an entire PostgreSQL database to 
 
 - Export all tables from a PostgreSQL database to GCS
 - Each table is stored in Iceberg format
-- Utilizes DuckDB for efficient data processing
+- Utilizes Arrow and Spark for efficient data processing
 - Asynchronous operations with asyncpg
 
 ## Prerequisites
