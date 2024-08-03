@@ -1,14 +1,30 @@
-postgres:
+database:
   user: postgres
   password: your_postgres_password
   host: localhost
   port: 5432
-  database: tfmv
+  dbname: tfmv
+
+output:
+  format: iceberg
+  filesystem: local  # Can be 'local', 's3', 'adl', or 'gcs'
+
+iceberg:
+  uri: "sqlite:///tmp/pyiceberg_catalog.db"
+  warehouse: "tmp/warehouse"  # Base path should include the cloud storage prefix
+
+s3:
+  bucket: your_bucket
+  key: your_key
+  secret: your_secret
+  region: your_region
+
+adl:
+  account_name: your_account
+  account_key: your_key
+  container_name: your_container
 
 gcs:
   bucket_name: tfmv-fuse
   project: tfmv-371720
   key_file: sa.json
-
-arrow:
-   format: iceberg
