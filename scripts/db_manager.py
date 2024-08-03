@@ -1,7 +1,10 @@
+import os
 import adbc_driver_postgresql.dbapi as pgdbapi
-from scripts.utils import load_config
+from scripts.utils import ConfigLoader
 
-config = load_config()
+script_dir = os.path.dirname(__file__)
+config_path = os.path.join(script_dir, '../config/config.yaml')
+config = ConfigLoader.load_config(config_path)
 
 def get_pg_uri(db_config):
     return f"postgresql://{db_config['user']}:{db_config['password']}@" \

@@ -1,19 +1,11 @@
 from app.routers import export_database, ExportRequest
-from scripts.utils import load_config
+from scripts.utils import ConfigLoader
 
 def main():
-    config = load_config()
+    config = ConfigLoader.load_config('config/config.yaml')
 
-    connection_config = {
-        'user': config['database']['user'],
-        'password': config['database']['password'],
-        'database': config['database']['dbname'],
-        'host': config['database']['host'],
-        'port': config['database']['port']
-    }
-
-    request = ExportRequest(format=config['output']['format'], connection_config=connection_config)
-    export_database(request, config)
+    request = ExportRequest(format=config['output']['format'])
+    export_database(request)
 
 if __name__ == "__main__":
     main()
