@@ -1,21 +1,21 @@
-# FrostyBridge: Exporting PostgreSQL Databases to Google Cloud Storage
+# FrostyBridge: Exporting PostgreSQL Databases to Various Storage Systems
 
-FrostyBridge is a Python solution designed to export entire PostgreSQL databases to Google Cloud Storage (GCS) in open data formats supported by Apache Arrow. It enables efficient and reliable data migration for analytical purposes.
+FrostyBridge is a Python solution designed to export entire PostgreSQL databases to various storage systems in open data formats. It enables efficient and reliable data migration for analytical purposes.
+
+FrostyBridge can be used to extract an entire Postgres database to an Iceberg data lake.
 
 ![FrostyBridge](assets/fb.webp)
 
 ## Features
 
-* **Full Database Export:** Export all tables from a PostgreSQL database to GCS.
-* **Parquet Format:** Each table is stored in the widely-used Parquet format for optimized data storage and retrieval.
+* **Full Database Export:** Seamlessly export all tables from a PostgreSQL database to supported storage systems, including local, S3, ADL, and GCS.
+* **Multiple Output Formats** Support for multiple output formats, including Parquet, CSV, Iceberg, Feather, ORC, and IPC.
 * **Arrow Power:** Utilizes Apache Arrow for efficient data processing, providing high performance and memory efficiency.
-* **Asynchronous Operations:** Leverages asyncpg for asynchronous operations, ensuring faster execution and scalability.
 
 ## Prerequisites
 
 * Python 3.7 or later
 * A PostgreSQL database
-* A Google Cloud Storage bucket
 * Required Python packages: Install them with `pip install -r requirements.txt`
 
 ## Installation
@@ -34,13 +34,7 @@ pip install -r requirements.txt
 
 3. **Configure `config.yaml`:**
 
-Edit the `config/config.yaml` file with your PostgreSQL and GCS details:
-
-```yaml
-database_url: "postgresql://user:password@host:port/database"
-gcs_bucket: "your-gcs-bucket"
-gcs_project: "your-gcp-project"
-```
+Edit the `config/config.yaml` file with your PostgreSQL and output details
 
 ## Usage
 
@@ -70,7 +64,7 @@ Run the following command to export the PostgreSQL database to GCS:
 docker build -t frostybridge .
 ```
 
-2. **Run the Docker container:**
+3. **Run the Docker container:**
 
 ```bash
 docker run -v /path/to/config:/app/config -v /path/to/local/parquet/files:/app/parquet-files frostybridge

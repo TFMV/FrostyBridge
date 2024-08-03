@@ -7,11 +7,11 @@ database:
 
 output:
   format: iceberg
-  filesystem: local  # Can be 'local', 's3', 'adl', or 'gcs'
+  filesystem: gcs  # Can be 'local', 's3', 'adl', or 'gcs'
 
 iceberg:
   uri: "sqlite:///tmp/pyiceberg_catalog.db"
-  warehouse: "tmp/warehouse"  # Base path should include the cloud storage prefix
+  warehouse: "gs://tfmv-fuse/tmp/warehouse"  # Base path should include the cloud storage prefix
 
 s3:
   bucket: your_bucket
