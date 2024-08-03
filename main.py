@@ -1,13 +1,19 @@
-import asyncio
-import yaml
 from app.routers import export_database, ExportRequest
+from scripts.utils import load_config
 
-async def main():
-    with open('config/config.yaml', 'r') as file:
-        config = yaml.safe_load(file)
+def main():
+    config = load_config()
 
-    request = ExportRequest(format=config['arrow']['format'])
-    await export_database(request)
+    connection_config = {
+        'user': config['database']['user'],
+        'password': config['database']['password'],
+        'database': config['database']['dbname'],
+        'host': config['database']['host'],
+        'port': config['database']['port']
+    }
+
+    request = ExportRequest(format=config['output']['format'], connection_config=connection_config)
+    export_database(request, config)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
