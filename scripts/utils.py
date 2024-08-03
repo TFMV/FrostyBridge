@@ -151,7 +151,7 @@ def export_to_iceberg(table_name, arrow_table, config):
         filesystem.mkdirs(db_directory, exist_ok=True)
 
     # Ensure catalog database is initialized correctly
-    catalog_db_path = config["iceberg"]["uri"].replace("sqlite:///", "")
+    catalog_db_path = config["iceberg"]["uri"]
     if os.path.exists(catalog_db_path):
         os.remove(catalog_db_path)
 

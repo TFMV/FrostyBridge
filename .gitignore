@@ -164,3 +164,5 @@ cython_debug/
 .DS_Store
 
 config/sa.json
+jars/gcs-connector-hadoop3-2.2.5-shaded.jar
+tmp/
