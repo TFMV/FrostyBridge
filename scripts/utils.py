@@ -107,6 +107,7 @@ class Exporter:
             DirectoryManager.ensure_directory_exists(self.base_path)
         else:
             self.filesystem.mkdirs(self.base_path, exist_ok=True)
+        self._init_catalog_and_namespace()
 
     def export_to_parquet(self, table_name, arrow_table):
         self._export_table(table_name, arrow_table, 'parquet', pq.write_table)
@@ -135,27 +136,10 @@ class Exporter:
     def export_to_iceberg(self, table_name, arrow_table):
         record_count = arrow_table.num_rows
         namespace = self.config['iceberg'].get("namespace", "default")
-        catalog_db_path = self.config["iceberg"]["uri"]
-
-        # Ensure catalog database is initialized correctly
-        if os.path.exists(catalog_db_path):
-            os.remove(catalog_db_path)
-
-        # Load the Iceberg catalog
-        catalog = load_catalog("default", **self.config['iceberg'])
-
-        # Define the namespace and table name
         full_table_name = f"{namespace}.{table_name}"
 
-        # Ensure the namespace exists
         try:
-            catalog.create_namespace(namespace)
-        except NamespaceAlreadyExistsError:
-            pass  # Namespace already exists
-
-        # Check if the table exists, and create it if it doesn't
-        try:
-            table = catalog.load_table(full_table_name)
+            table = self.catalog.load_table(full_table_name)
             logger.info(f"Table {full_table_name} already exists.")
             # Update schema and overwrite data
             with table.update_schema() as update_schema:
@@ -164,7 +148,7 @@ class Exporter:
             logger.info(f"Table {full_table_name} ({record_count} records) overwritten with new data.")
         except NoSuchTableError:
             logger.info(f"Table {full_table_name} does not exist. Creating it.")
-            table = catalog.create_table(full_table_name, schema=arrow_table.schema)
+            table = self.catalog.create_table(full_table_name, schema=arrow_table.schema)
             logger.info(f"Table {full_table_name} created.")
             table.overwrite(arrow_table)
             logger.info(f"Data from {table_name} ({record_count} records) written to new Iceberg table successfully.")
@@ -191,3 +175,17 @@ class Exporter:
             with self.filesystem.open(output_path, 'wb') as f:
                 write_func(arrow_table, f)
         logger.info(f"Table {table_name} ({record_count} records) exported to {extension.upper()} successfully at {output_path}")
+
+    def _init_catalog_and_namespace(self):
+        catalog_db_path = self.config["iceberg"]["uri"]
+        if os.path.exists(catalog_db_path):
+            os.remove(catalog_db_path)
+        self.catalog = load_catalog("default", **self.config['iceberg'])
+        namespace = self.config['iceberg'].get("namespace", "default")
+        self._ensure_namespace_exists(namespace)
+
+    def _ensure_namespace_exists(self, namespace):
+        try:
+            self.catalog.create_namespace(namespace)
+        except NamespaceAlreadyExistsError:
+            pass  # Namespace already exists

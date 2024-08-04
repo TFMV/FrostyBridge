@@ -3,7 +3,7 @@ database:
   password: your_postgres_password
   host: localhost
   port: 5432
-  dbname: tfmv
+  dbname: pagila
 
 output:
   format: iceberg
@@ -11,7 +11,7 @@ output:
 
 iceberg:
   uri: "sqlite:///tmp/pyiceberg_catalog.db"
-  warehouse: "gs://tfmv-fuse/tmp/warehouse"  # Base path should include the cloud storage prefix
+  warehouse: "gs://tfmv-fuse/pagila/warehouse"  # Base path should include the cloud storage prefix
 
 s3:
   bucket: your_bucket
